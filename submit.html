@@ -1,0 +1,257 @@
+<!DOCTYPE html5>
+<html>
+<head>
+<meta charset="utf-8">
+<!--website work on all devices and screen solutions-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!--start link of styling needs for all device and browser, font, font family-->
+<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=lato">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#submit_btn").click(function() {
+
+        var proceed = true;
+        //simple validation at client's end
+        //loop through each field and we simply change border color to red for invalid fields
+        $("#contact_form input[required=true], #contact_form textarea[required=true]").each(function(){
+            $(this).css('border-color','');
+            if(!$.trim($(this).val())){ //if this field is empty
+                $(this).css('border-color','red'); //change border color to red
+                proceed = false; //set do not proceed flag
+            }
+            //check invalid email
+            var email_reg = /^([w-.]+@([w-]+.)+[w-]{2,4})?$/;
+            if($(this).attr("type")=="email" && !email_reg.test($.trim($(this).val()))){
+                $(this).css('border-color','red'); //change border color to red
+                proceed = false; //set do not proceed flag
+            }
+        });
+
+
+        if(proceed) //everything looks good! proceed...
+        {
+           //data to be sent to server
+            var m_data = new FormData();
+            m_data.append( 'user_name', $('input[name=name]').val());
+            m_data.append( 'user_email', $('input[name=email]').val());
+            m_data.append( 'country_code', $('input[name=phone1]').val());
+            m_data.append( 'phone_number', $('input[name=phone2]').val());
+            m_data.append( 'subject', $('select[name=subject]').val());
+            m_data.append( 'msg', $('textarea[name=message]').val());
+            m_data.append( 'file_attach', $('input[name=file_attach]')[0].files[0]);
+
+            //instead of $.post() we are using $.ajax()
+            //that's because $.ajax() has more options and flexibly.
+            $.ajax({
+              url: 'contact_me.php',
+              data: m_data,
+              processData: false,
+              contentType: false,
+              type: 'POST',
+              dataType:'json',
+              success: function(response){
+                 //load json data from server and output message
+                if(response.type == 'error'){ //load json data from server and output message
+                    output = '<div class="error">'+response.text+'</div>';
+                }else{
+                    output = '<div class="success">'+response.text+'</div>';
+                }
+                $("#contact_form #contact_results").hide().html(output).slideDown();
+              }
+            });
+
+
+        }
+    });
+
+    //reset previously set border colors and hide all message on .keyup()
+    $("#contact_form  input[required=true], #contact_form textarea[required=true]").keyup(function() {
+        $(this).css('border-color','');
+        $("#result").slideUp();
+    });
+});
+</script>
+<link href="style.css" rel="stylesheet" type="text/css"/>
+</head>
+
+
+<!--submit-->
+<style>
+body{font-family: "Lato, sans-serif"}
+.mySlides {display:none}
+
+ul {
+  text-align: left;
+}
+
+li {
+  align-self: center;
+}
+#wrap {
+  float:left;
+  position: relative;
+  left: 50%;
+}
+
+#content {
+  float: left;
+  position: relative;
+  left: -50%;
+}
+
+</style>
+
+<!--tester-->
+
+
+<body>
+<!--navigation-->
+<nav>
+    <ul class="w3-navbar w3-blue">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#submit.html">Submit Test Forms</a></li>
+      <li><a href="tester.html">Become a Tester</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+    </ul>
+</nav>
+
+
+
+<!--start slide show-->
+<section>
+  <img class="mySlides" height="500" src="img/send.png" style="width:100%">
+  <img class="mySlides" height="500" src="img/checklist.jpg" style="width:100%">
+  <img class="mySlides" height="500" src="http://i44.photobucket.com/albums/f19/LauraS_07/Check%20mark_zpskn7ee5q5.jpg" style="width:100%">
+</section>
+
+<!--automatic slideshow-->
+
+<!--Start Section Cross Connection Control Unit-->
+<section class="w3-container w3-center" style="max-width:auto">
+  <h1 class="w3-wide">Completed Your Annual Backflow Testing?</h1>
+  <h2 <p class="w3-opacity"><i>Customers or Backflow Testers Can Submit Here:</i></p></h2>
+  <h3> Please fill out the form below</h3>
+</section>
+
+
+<!--Newest Form-->
+<body>
+<link rel="stylesheet" type="text/css" href="css/form.css">
+<div class="form-style" id="contact_form">
+    <div class="form-style-heading"></div>
+    <div id="contact_results"></div>
+    <form id="contact_body" method="post" action="contact_me.php">
+       <br><center><label for="name"><span>Name <span class="required">*</span></span>
+            <input type="text" name="name" data-required="true"/>
+        </label></center>
+       <br><center><label for="email"><span>Email <span class="required">*</span></span>
+            <input type="email" name="email" data-required="true"/>
+        </label></center>
+        <br><center><label><span>Phone <span class="required">*</span></span>
+            <input type="text" name="phone1" maxlength="4" placeholder="+91" data-required="true"/>&mdash;
+            <input type="text" name="phone2" maxlength="15" data-required="true"/>
+        </label></center>
+       <br><center><label><span>Attachment</span>
+            <input type="file" name="file_attach[]"  />
+        </label></center>
+
+            <br><center><label for="subject"><span>Regarding</span>
+            <select name="subject">
+            <option value="General Question">General Question</option>
+            <option value="Advertise">Submit Completed Test Report</option>
+            <option value="Partnership">Request Blank Test Form</option>
+            </select>
+        </label></center>
+       <br><center><label for="message"><span>Message <span class="required">*</span></span>
+            <textarea name="message" data-required="true"></textarea>
+        </label></center>
+        <br><center><label><span>&nbsp;</span>
+        	<button type="submit">Submit</button>
+        </label></center>
+    </form>
+</div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<a name="tester">
+<!--- Start Navigation -->
+  <script src="js/jquery-1.11.2.min.js"></script>
+  <script src="js/main.js"></script>
+  <!--- For Navigation -->
+
+
+<!--Paragraph for any comments-->
+<section class="w3-container w3-center" style="max-width:600px">
+  <p class="w3-justify">
+    </p>
+</section>
+
+<!--Start images-->
+<section class="w3-row-paddding w3-center w3-white">
+  <article class="">
+    <h3><b><p>How You can Submit online</p></b></h3>
+    <h4><b><p>Take photo of your completed Backflow Test Report</p></b></h4>
+    <img src="http://i44.photobucket.com/albums/f19/LauraS_07/unnamed_zpsbkzbpn5a.png"</img>
+    <h4><b><p>Submit by accessing our web application via a Desktop Computer, Mobile Phone, or Tablet</p></b></h4>
+    <img src="http://i44.photobucket.com/albums/f19/LauraS_07/Screen%20Shot%202017-05-11%20at%207.31.17%20AM_zps8iqombsp.png"</img>
+    <img src="http://i44.photobucket.com/albums/f19/LauraS_07/Screen%20Shot%202017-05-11%20at%207.31.34%20AM_zpsdf3vl1dl.png"</img>
+    <img src="http://i44.photobucket.com/albums/f19/LauraS_07/Screen%20Shot%202017-05-11%20at%207.31.41%20AM_zpsezahkg4t.png"</img>
+
+<br>
+<br>
+<br>
+<section class="w3-row-paddding w3-center w3-white">
+  <article class="">
+    <h3><b><p>Do you have questions or concerns?</p></b></h3>
+    <img src=""</img>
+    <h4><p> Fill free to reach out to us if you find any illegal connections or have questions pertaining to installation.</p></h4>
+    <h4><p> Questions are taken via the form submission box above as well</p></h4>
+    <h4><p> Need immediate assistance contact our office: (858) 292-6329</p></br></h4>
+
+  </article>
+</section>
+
+
+
+<!--Start footer-->
+<footer class="w3-container w3-padding-64 w3-center w3-blue w3-xlarge">
+  <a href="https://www.sandiego.gov/sites/default/files/legacy/water/pdf/ccpp070419.pdf" target="_blank"><img src="img/droplet.png" border="0" alt="water droplet"/></a>
+<p><b>Click on Icon Above for More Info</b></p>
+<p class="w3-large"><b>Website Created for MSE Graduate Project by Laura San</b></p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 3 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}
+    x[myIndex-1].style.display = "block";
+    setTimeout(carousel, 3000);
+}
+</script>
+
+</body>
+</html>
