@@ -1,6 +1,6 @@
 <?php
-$recipient_email    = "laurasan207@gmail.com"; //recepient
-$from_email         = "laurrasann@gmail.com"; //from email using site domain.
+$recipient_email    = ""; //recepient
+$from_email         = ""; //from email using site domain.
 
 
 if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) AND strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest') {
